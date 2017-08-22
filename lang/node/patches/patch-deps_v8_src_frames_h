@@ -1,0 +1,16 @@
+$OpenBSD$
+
+Index: deps/v8/src/frames.h
+--- deps/v8/src/frames.h.orig
++++ deps/v8/src/frames.h
+@@ -441,8 +441,8 @@ class StackFrame BASE_EMBEDDED {
+   // up one word and become unaligned.
+   Address UnpaddedFP() const;
+ 
+-  Address pc() const { return *pc_address(); }
+-  void set_pc(Address pc) { *pc_address() = pc; }
++  Address pc() const;
++  void set_pc(Address pc);
+ 
+   Address constant_pool() const { return *constant_pool_address(); }
+   void set_constant_pool(Address constant_pool) {

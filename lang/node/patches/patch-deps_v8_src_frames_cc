@@ -1,0 +1,37 @@
+$OpenBSD$
+
+Index: deps/v8/src/frames.cc
+--- deps/v8/src/frames.cc.orig
++++ deps/v8/src/frames.cc
+@@ -24,6 +24,7 @@ ReturnAddressLocationResolver
+     StackFrame::return_address_location_resolver_ = NULL;
+ 
+ 
++
+ // Iterator that supports traversing the stack handlers of a
+ // particular frame. Needs to know the top of the handler chain.
+ class StackHandlerIterator BASE_EMBEDDED {
+@@ -527,6 +528,23 @@ Address StackFrame::UnpaddedFP() const {
+   return fp();
+ }
+ 
++
++Address StackFrame::pc() const {
++  if (is_exit()) {
++    return (Address)((unsigned long)*pc_address() ^ (unsigned long)GetCallerStackPointer());
++  } else {
++    return *pc_address();
++  }
++}
++
++void StackFrame::set_pc(Address pc) {
++  if (is_exit()) {
++    // XXX: should ExitFrame::set_pc() even be allowed?
++    *pc_address() = (Address)((unsigned long)pc ^ (unsigned long)GetCallerStackPointer());
++  } else {
++    *pc_address() = pc;
++  }
++}
+ 
+ Code* EntryFrame::unchecked_code() const {
+   return isolate()->heap()->js_entry_code();
