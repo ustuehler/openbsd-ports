@@ -1,0 +1,13 @@
+$OpenBSD$
+
+Index: deps/v8/src/debug/liveedit.cc
+--- deps/v8/src/debug/liveedit.cc.orig
++++ deps/v8/src/debug/liveedit.cc
+@@ -1616,6 +1616,7 @@ static const char* DropFrames(Vector<StackFrame*> fram
+   DCHECK(!FixTryCatchHandler(pre_top_frame, bottom_js_frame));
+ 
+   Handle<Code> code = isolate->builtins()->FrameDropper_LiveEdit();
++  // XXX: should use top_frame->set_pc(code->entry()) here?
+   *top_frame_pc_address = code->entry();
+   pre_top_frame->SetCallerFp(bottom_js_frame->fp());
+ 
