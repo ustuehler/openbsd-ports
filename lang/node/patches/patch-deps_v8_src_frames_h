@@ -14,3 +14,14 @@ Index: deps/v8/src/frames.h
  
    Address constant_pool() const { return *constant_pool_address(); }
    void set_constant_pool(Address constant_pool) {
+@@ -488,8 +488,8 @@ class StackFrame BASE_EMBEDDED {
+                                 unsigned* stack_slots);
+ 
+   virtual void Iterate(ObjectVisitor* v) const = 0;
+-  static void IteratePc(ObjectVisitor* v, Address* pc_address,
+-                        Address* constant_pool_address, Code* holder);
++  void IteratePc(ObjectVisitor* v, Address* pc_address,
++                        Address* constant_pool_address, Code* holder) const;
+ 
+   // Sets a callback function for return-address rewriting profilers
+   // to resolve the location of a return address to the location of the

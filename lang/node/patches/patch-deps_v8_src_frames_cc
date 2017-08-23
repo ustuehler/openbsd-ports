@@ -11,7 +11,29 @@ Index: deps/v8/src/frames.cc
  // Iterator that supports traversing the stack handlers of a
  // particular frame. Needs to know the top of the handler chain.
  class StackHandlerIterator BASE_EMBEDDED {
-@@ -527,6 +528,23 @@ Address StackFrame::UnpaddedFP() const {
+@@ -378,8 +379,9 @@ static bool GcSafeCodeContains(HeapObject* object, Add
+ 
+ 
+ void StackFrame::IteratePc(ObjectVisitor* v, Address* pc_address,
+-                           Address* constant_pool_address, Code* holder) {
+-  Address pc = *pc_address;
++                           Address* constant_pool_address, Code* holder) const {
++  Address pc = this->pc();
++  assert(pc_address == this->pc_address());
+   DCHECK(GcSafeCodeContains(holder, pc));
+   unsigned pc_offset = static_cast<unsigned>(pc - holder->instruction_start());
+   Object* code = holder;
+@@ -387,7 +389,8 @@ void StackFrame::IteratePc(ObjectVisitor* v, Address* 
+   if (code != holder) {
+     holder = reinterpret_cast<Code*>(code);
+     pc = holder->instruction_start() + pc_offset;
+-    *pc_address = pc;
++    // XXX: set_pc() should be declared const?
++    ((v8::internal::StackFrame *)this)->set_pc(pc);
+     if (FLAG_enable_embedded_constant_pool && constant_pool_address) {
+       *constant_pool_address = holder->constant_pool();
+     }
+@@ -527,6 +530,23 @@ Address StackFrame::UnpaddedFP() const {
    return fp();
  }
  
